@@ -1,0 +1,114 @@
+--// Services
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+--// ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+--// Background
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1,0,1,0)
+bg.BackgroundColor3 = Color3.fromRGB(25,25,25)
+bg.Parent = screenGui
+
+--// "Script is Ready" label at top
+local readyLabel = Instance.new("TextLabel")
+readyLabel.Size = UDim2.new(1,0,0.1,0)
+readyLabel.Position = UDim2.new(0,0,0,0)
+readyLabel.Text = "Script is Ready"
+readyLabel.TextScaled = true
+readyLabel.TextColor3 = Color3.fromRGB(255,255,255)
+readyLabel.BackgroundTransparency = 1
+readyLabel.Font = Enum.Font.SourceSansBold
+readyLabel.Parent = bg
+
+--// Loading Text
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(1,0,0.1,0)
+textLabel.Position = UDim2.new(0,0,0.4,0)
+textLabel.Text = "Loading... 0%"
+textLabel.TextScaled = true
+textLabel.TextColor3 = Color3.fromRGB(255,255,255)
+textLabel.BackgroundTransparency = 1
+textLabel.Font = Enum.Font.SourceSansBold
+textLabel.Parent = bg
+
+--// Extra Wait Label
+local waitLabel = Instance.new("TextLabel")
+waitLabel.Size = UDim2.new(1,0,0.12,0)
+waitLabel.Position = UDim2.new(0,0,0.5,0)
+waitLabel.Text = "Wait 10 min – Checking all data..."
+waitLabel.TextScaled = true
+waitLabel.TextColor3 = Color3.fromRGB(255,255,100)
+waitLabel.BackgroundTransparency = 1
+waitLabel.Font = Enum.Font.GothamBold
+waitLabel.TextStrokeTransparency = 0.3
+waitLabel.Parent = bg
+
+--// Progress Bar Container
+local barContainer = Instance.new("Frame")
+barContainer.Size = UDim2.new(0.5,0,0.05,0)
+barContainer.Position = UDim2.new(0.25,0,0.65,0)
+barContainer.BackgroundColor3 = Color3.fromRGB(50,50,50)
+barContainer.BorderSizePixel = 0
+barContainer.Parent = bg
+
+--// Progress Bar Fill
+local barFill = Instance.new("Frame")
+barFill.Size = UDim2.new(0,0,1,0)
+barFill.BackgroundColor3 = Color3.fromRGB(0,255,255)
+barFill.BorderSizePixel = 0
+barFill.Parent = barContainer
+
+--// Tween Service
+local TweenService = game:GetService("TweenService")
+
+-- Mini Clicker Game
+local clickButton = Instance.new("TextButton")
+clickButton.Size = UDim2.new(0.3,0,0.1,0)
+clickButton.Position = UDim2.new(0.35,0,0.8,0)
+clickButton.Text = "Click Me!"
+clickButton.TextScaled = true
+clickButton.TextColor3 = Color3.fromRGB(255,255,255)
+clickButton.BackgroundColor3 = Color3.fromRGB(0,170,255)
+clickButton.Font = Enum.Font.GothamBold
+clickButton.Parent = bg
+
+local score = 0
+local scoreLabel = Instance.new("TextLabel")
+scoreLabel.Size = UDim2.new(0.3,0,0.08,0)
+scoreLabel.Position = UDim2.new(0.35,0,0.72,0)
+scoreLabel.Text = "Score: 0"
+scoreLabel.TextScaled = true
+scoreLabel.TextColor3 = Color3.fromRGB(255,255,255)
+scoreLabel.BackgroundTransparency = 1
+scoreLabel.Font = Enum.Font.GothamBold
+scoreLabel.Parent = bg
+
+clickButton.MouseButton1Click:Connect(function()
+	score += 1
+	scoreLabel.Text = "Score: " .. score
+end)
+
+-- Total loading time = 10 minutes = 600 seconds
+local totalTime = 600
+local steps = 100
+local waitPerStep = totalTime / steps -- 6 seconds per 1%
+
+-- Simulate loading progress
+for i = 1,100 do
+	task.wait(waitPerStep)
+	barFill:TweenSize(UDim2.new(i/100,0,1,0),"Out","Quad",1,true)
+	textLabel.Text = "Loading... " .. i .. "%"
+end
+
+-- Fade out when finished
+local fadeTween = TweenService:Create(bg, TweenInfo.new(1), {BackgroundTransparency = 1})
+fadeTween:Play()
+fadeTween.Completed:Wait()
+
+screenGui:Destroy()
