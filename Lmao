@@ -1,7 +1,8 @@
--- Zysume Spawner Loading Screen (Aqua Box + Rose Effect + Navy Progress)
+-- Zysume Spawner Loading Screen (Aqua Box + Progress + Math Mini Game)
 
 local player = game.Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
+local UIS = game:GetService("UserInputService")
 
 -- ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -11,9 +12,9 @@ screenGui.Parent = PlayerGui
 
 -- Background Frame (Glass Aqua Box)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.6, 0, 0.45, 0) -- bigger box
-mainFrame.Position = UDim2.new(0.2, 0, 0.275, 0) -- centered
-mainFrame.BackgroundColor3 = Color3.fromRGB(0, 200, 200) -- aqua base
+mainFrame.Size = UDim2.new(0.6, 0, 0.5, 0)
+mainFrame.Position = UDim2.new(0.2, 0, 0.25, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 200, 200)
 mainFrame.BackgroundTransparency = 0.25
 mainFrame.BorderSizePixel = 4
 mainFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
@@ -22,64 +23,43 @@ mainFrame.Parent = screenGui
 -- Glossy Aqua Gradient
 local gradient = Instance.new("UIGradient")
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 255, 255)),  -- shiny top aqua
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 180, 180)), -- deeper aqua
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 100))    -- darker aqua bottom
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 255, 255)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 180, 180)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 100))
 }
 gradient.Rotation = 90
 gradient.Parent = mainFrame
 
--- Rose Glow Effect (shimmer inside)
-local roseEffect = Instance.new("ImageLabel")
-roseEffect.Size = UDim2.new(1.2, 0, 1.5, 0)
-roseEffect.Position = UDim2.new(-0.1, 0, -0.25, 0)
-roseEffect.BackgroundTransparency = 1
-roseEffect.Image = "rbxassetid://463633129" -- glowing soft light texture
-roseEffect.ImageColor3 = Color3.fromRGB(255, 105, 180) -- rose pink
-roseEffect.ImageTransparency = 0.4
-roseEffect.ZIndex = 0
-roseEffect.Parent = mainFrame
-
--- Animate Rose Effect (soft scrolling)
-task.spawn(function()
-	while roseEffect.Parent do
-		for i = 0, 1, 0.01 do
-			roseEffect.Position = UDim2.new(-0.1, 0, -0.25 + i, 0)
-			task.wait(0.05)
-		end
-	end
-end)
-
 -- Title
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0.15, 0)
+title.Size = UDim2.new(1, 0, 0.12, 0)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundTransparency = 1
 title.Text = "Zysume Spawner"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 38
+title.TextSize = 36
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Parent = mainFrame
 
 -- Loading Text
 local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(1, 0, 0.25, 0)
-loadingText.Position = UDim2.new(0, 0, 0.45, 0)
+loadingText.Size = UDim2.new(1, 0, 0.15, 0)
+loadingText.Position = UDim2.new(0, 0, 0.3, 0)
 loadingText.BackgroundTransparency = 1
 loadingText.Text = "Loading... 0%"
 loadingText.Font = Enum.Font.GothamBlack
-loadingText.TextSize = 50
-loadingText.TextColor3 = Color3.fromRGB(255, 255, 0) -- yellow
+loadingText.TextSize = 40
+loadingText.TextColor3 = Color3.fromRGB(255, 255, 0)
 loadingText.TextStrokeTransparency = 0
 loadingText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 loadingText.Parent = mainFrame
 
 -- Info Text
 local infoText = Instance.new("TextLabel")
-infoText.Size = UDim2.new(1, 0, 0.15, 0)
-infoText.Position = UDim2.new(0, 0, 0.68, 0)
+infoText.Size = UDim2.new(1, 0, 0.1, 0)
+infoText.Position = UDim2.new(0, 0, 0.45, 0)
 infoText.BackgroundTransparency = 1
-infoText.Text = "Wait 5 min – Checking data..."
+infoText.Text = "Solve Math Problems While Waiting..."
 infoText.Font = Enum.Font.GothamBold
 infoText.TextSize = 24
 infoText.TextColor3 = Color3.fromRGB(230, 230, 230)
@@ -87,27 +67,98 @@ infoText.Parent = mainFrame
 
 -- Progress Bar Background
 local progressBg = Instance.new("Frame")
-progressBg.Size = UDim2.new(0.8, 0, 0.08, 0)
-progressBg.Position = UDim2.new(0.1, 0, 0.85, 0)
+progressBg.Size = UDim2.new(0.8, 0, 0.06, 0)
+progressBg.Position = UDim2.new(0.1, 0, 0.87, 0)
 progressBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 progressBg.BackgroundTransparency = 0.4
 progressBg.BorderSizePixel = 2
 progressBg.BorderColor3 = Color3.fromRGB(255, 255, 255)
 progressBg.Parent = mainFrame
 
--- Progress Bar (Navy Blue)
+-- Progress Bar (Sky Blue)
 local progressBar = Instance.new("Frame")
 progressBar.Size = UDim2.new(0, 0, 1, 0)
-progressBar.BackgroundColor3 = Color3.fromRGB(0, 0, 128) -- navy blue
+progressBar.BackgroundColor3 = Color3.fromRGB(135, 206, 250)
 progressBar.BorderSizePixel = 0
 progressBar.Parent = progressBg
 
--- Fake Loading Progress (5 min = 300 sec)
+-- ========== Math Mini Game ==========
+local gameFrame = Instance.new("Frame")
+gameFrame.Size = UDim2.new(0.9, 0, 0.25, 0)
+gameFrame.Position = UDim2.new(0.05, 0, 0.58, 0)
+gameFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+gameFrame.BackgroundTransparency = 0.3
+gameFrame.BorderSizePixel = 2
+gameFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+gameFrame.Parent = mainFrame
+
+-- Question Label
+local question = Instance.new("TextLabel")
+question.Size = UDim2.new(1, 0, 0.4, 0)
+question.Position = UDim2.new(0, 0, 0, 0)
+question.BackgroundTransparency = 1
+question.Text = "Get Ready..."
+question.Font = Enum.Font.GothamBold
+question.TextSize = 28
+question.TextColor3 = Color3.fromRGB(255, 255, 255)
+question.Parent = gameFrame
+
+-- Answer Box
+local answerBox = Instance.new("TextBox")
+answerBox.Size = UDim2.new(0.6, 0, 0.35, 0)
+answerBox.Position = UDim2.new(0.2, 0, 0.45, 0)
+answerBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+answerBox.Text = ""
+answerBox.PlaceholderText = "Type Answer..."
+answerBox.Font = Enum.Font.GothamBold
+answerBox.TextSize = 22
+answerBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+answerBox.Parent = gameFrame
+
+-- Feedback Label
+local feedback = Instance.new("TextLabel")
+feedback.Size = UDim2.new(1, 0, 0.25, 0)
+feedback.Position = UDim2.new(0, 0, 0.75, 0)
+feedback.BackgroundTransparency = 1
+feedback.Text = ""
+feedback.Font = Enum.Font.GothamBold
+feedback.TextSize = 24
+feedback.TextColor3 = Color3.fromRGB(255, 255, 255)
+feedback.Parent = gameFrame
+
+-- Math Question Generator
+local correctAnswer = 0
+
+local function newQuestion()
+	local a = math.random(1,20)
+	local b = math.random(1,20)
+	correctAnswer = a + b
+	question.Text = a .. " + " .. b .. " = ?"
+	answerBox.Text = ""
+	feedback.Text = ""
+end
+
+answerBox.FocusLost:Connect(function(enterPressed)
+	if enterPressed then
+		local val = tonumber(answerBox.Text)
+		if val == correctAnswer then
+			feedback.Text = "✅ Correct!"
+			feedback.TextColor3 = Color3.fromRGB(0,255,0)
+			task.delay(1, newQuestion)
+		else
+			feedback.Text = "❌ Try Again!"
+			feedback.TextColor3 = Color3.fromRGB(255,0,0)
+		end
+	end
+end)
+
+newQuestion()
+
+-- ========== Fake Loading Progress ==========
 for i = 1, 100 do
-	task.wait(3) -- 100 steps * 3 sec = 300 sec = 5 min
+	task.wait(3) -- 5 min total
 	loadingText.Text = "Loading... " .. i .. "%"
 	progressBar.Size = UDim2.new(i/100, 0, 1, 0)
 end
 
--- Remove GUI after finished
 screenGui:Destroy()
